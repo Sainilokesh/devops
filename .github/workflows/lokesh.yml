@@ -1,0 +1,22 @@
+name: Deploy Static Website
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on changes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to VM
+      run: |
+        ssh -o StrictHostKeyChecking=no azureuser@13.65.4.155 "rm -rf /var/www/html/*"
+        scp -o StrictHostKeyChecking=no -r ./* azureuser@13.65.4.155:/var/www/html
+       
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
